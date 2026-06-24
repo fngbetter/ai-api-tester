@@ -32,6 +32,7 @@
       justify-content: center;
       gap: 0.75rem;
       margin-bottom: 2rem;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -48,15 +49,18 @@
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     .btn-primary   { background: #fff; color: #000; }
     .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-add       { background: #1e1e2e; color: #a78bfa; border: 1px dashed #a78bfa50; }
+    .btn-add:hover { background: #a78bfa15; opacity: 1; }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
+    /* ── Cards ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -71,13 +75,8 @@
     .card.failure { border-color: #ef444440; }
     .card.testing { border-color: #f59e0b40; }
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .provider-info { display: flex; align-items: center; gap: 0.65rem; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; }
+    .provider-info { display: flex; align-items: center; gap: 0.65rem; min-width: 0; }
 
     .icon {
       width: 36px; height: 36px;
@@ -91,9 +90,10 @@
     .icon-gemini { background: #4f8ef720; color: #4f8ef7; }
     .icon-ollama { background: #a78bfa20; color: #a78bfa; }
 
-    .provider-name { font-weight: 600; font-size: 0.95rem; }
-    .provider-sub  { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
+    .provider-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .provider-sub  { font-size: 0.75rem; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
 
+    .card-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
     .status-wrap { display: flex; align-items: center; gap: 0.4rem; }
 
     .dot {
@@ -106,15 +106,27 @@
     .dot.ok      { background: #10b981; box-shadow: 0 0 6px #10b98180; }
     .dot.fail    { background: #ef4444; box-shadow: 0 0 6px #ef444480; }
     .dot.pending { background: #f59e0b; animation: blink 0.9s ease-in-out infinite; }
-
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
     .latency { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 
-    .field-group { display: flex; flex-direction: column; gap: 0.35rem; }
-    label { font-size: 0.78rem; color: var(--muted); }
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #444;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .delete-btn:hover { color: #ef4444; }
 
-    input[type="password"], input[type="text"] {
+    .field-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    label { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+
+    input[type="password"],
+    input[type="text"] {
       background: #0d0d0d;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -128,24 +140,48 @@
     }
     input:focus { border-color: #555; }
 
+    select {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.85rem;
+      padding: 0.5rem 0.65rem;
+      width: 100%;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.65rem center;
+      padding-right: 2rem;
+    }
+    select:focus { border-color: #555; }
+    select option { background: #1a1a1a; }
+
+    textarea {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.8rem;
+      padding: 0.5rem 0.65rem;
+      width: 100%;
+      outline: none;
+      resize: vertical;
+      font-family: 'Courier New', monospace;
+      min-height: 90px;
+      line-height: 1.5;
+    }
+    textarea:focus { border-color: #555; }
+
     .row { display: flex; gap: 0.5rem; }
     .row .field-group:first-child { flex: 2; }
     .row .field-group:last-child  { flex: 1; }
 
-    .footer-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
+    .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
 
-    .detail {
-      font-size: 0.78rem;
-      color: var(--muted);
-      min-height: 1rem;
-      word-break: break-word;
-      flex: 1;
-    }
+    .detail { font-size: 0.78rem; color: var(--muted); min-height: 1rem; word-break: break-word; flex: 1; }
     .detail.ok   { color: #10b981; }
     .detail.fail { color: #ef4444; }
 
@@ -164,11 +200,7 @@
     .btn-test:hover:not(:disabled) { background: #222; }
     .btn-test:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .ollama-hint {
-      font-size: 0.72rem;
-      color: #555;
-      line-height: 1.5;
-    }
+    .ollama-hint { font-size: 0.72rem; color: #555; line-height: 1.5; }
     .ollama-hint code {
       font-family: 'Courier New', monospace;
       color: #a78bfa;
@@ -177,12 +209,73 @@
       border-radius: 3px;
     }
 
-    footer {
-      text-align: center;
-      margin-top: 2.5rem;
-      font-size: 0.78rem;
-      color: #333;
+    /* ── Add Form ── */
+    .add-form-card {
+      grid-column: 1 / -1;
+      max-width: 580px;
+      margin: 0 auto;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid #a78bfa40;
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
+
+    .form-title-row { display: flex; align-items: center; justify-content: space-between; }
+    .form-title { font-weight: 600; font-size: 0.95rem; }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .close-btn:hover { color: var(--text); }
+
+    .hdr-rows { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .hdr-row { display: flex; gap: 0.4rem; align-items: center; }
+    .hdr-row input:first-child { flex: 1; }
+    .hdr-row input:last-of-type { flex: 1.4; }
+
+    .rm-btn {
+      background: none;
+      border: none;
+      color: #444;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0 0.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .rm-btn:hover { color: #ef4444; }
+
+    .add-hdr-btn {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: 5px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      margin-top: 0.1rem;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .add-hdr-btn:hover { border-color: #555; color: var(--text); }
+
+    .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+
+    footer { text-align: center; margin-top: 2.5rem; font-size: 0.78rem; color: #333; }
   </style>
 </head>
 <body>
@@ -194,6 +287,7 @@
 
 <div class="actions">
   <button class="btn btn-primary"   id="testAll">Test All</button>
+  <button class="btn btn-add"       id="btnAdd">+ Add API</button>
   <button class="btn btn-secondary" id="clearAll">Clear</button>
 </div>
 
@@ -202,39 +296,111 @@
 <footer>Keys are saved in your browser's local storage and never sent anywhere else</footer>
 
 <script>
-const STORAGE_KEY = 'ai-api-tester-keys';
+// ── Storage keys ─────────────────────────────────────────────────────────────
+const KEYS_STORAGE   = 'ai-api-tester-keys';
+const CUSTOM_STORAGE = 'ai-api-tester-custom';
 
+// ── Accent colours for custom cards ──────────────────────────────────────────
+const ACCENT_COLORS = ['#6366f1','#ec4899','#f97316','#14b8a6','#84cc16','#f43f5e','#06b6d4','#a78bfa','#fb923c','#34d399'];
+
+// ── Templates ─────────────────────────────────────────────────────────────────
+const TEMPLATES = {
+  anthropic: {
+    name: 'Claude (Anthropic)',
+    url: 'https://api.anthropic.com/v1/messages',
+    method: 'POST',
+    headers: [
+      { key: 'x-api-key',          value: '' },
+      { key: 'anthropic-version',   value: '2023-06-01' },
+      { key: 'content-type',        value: 'application/json' },
+    ],
+    body: JSON.stringify({ model: 'claude-opus-4-8', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }, null, 2),
+  },
+  openai: {
+    name: 'OpenAI',
+    url: 'https://api.openai.com/v1/chat/completions',
+    method: 'POST',
+    headers: [
+      { key: 'Authorization',  value: 'Bearer ' },
+      { key: 'content-type',   value: 'application/json' },
+    ],
+    body: JSON.stringify({ model: 'gpt-4o', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }, null, 2),
+  },
+  gemini: {
+    name: 'Gemini (Google)',
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=',
+    method: 'POST',
+    headers: [{ key: 'content-type', value: 'application/json' }],
+    body: JSON.stringify({ contents: [{ parts: [{ text: 'hi' }] }], generationConfig: { maxOutputTokens: 1 } }, null, 2),
+  },
+  groq: {
+    name: 'Groq',
+    url: 'https://api.groq.com/openai/v1/chat/completions',
+    method: 'POST',
+    headers: [
+      { key: 'Authorization', value: 'Bearer ' },
+      { key: 'content-type',  value: 'application/json' },
+    ],
+    body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }, null, 2),
+  },
+  mistral: {
+    name: 'Mistral',
+    url: 'https://api.mistral.ai/v1/chat/completions',
+    method: 'POST',
+    headers: [
+      { key: 'Authorization', value: 'Bearer ' },
+      { key: 'content-type',  value: 'application/json' },
+    ],
+    body: JSON.stringify({ model: 'mistral-large-latest', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }, null, 2),
+  },
+  xai: {
+    name: 'xAI (Grok)',
+    url: 'https://api.x.ai/v1/chat/completions',
+    method: 'POST',
+    headers: [
+      { key: 'Authorization', value: 'Bearer ' },
+      { key: 'content-type',  value: 'application/json' },
+    ],
+    body: JSON.stringify({ model: 'grok-3', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }, null, 2),
+  },
+  cohere: {
+    name: 'Cohere',
+    url: 'https://api.cohere.com/v2/chat',
+    method: 'POST',
+    headers: [
+      { key: 'Authorization', value: 'Bearer ' },
+      { key: 'content-type',  value: 'application/json' },
+    ],
+    body: JSON.stringify({ model: 'command-r-plus', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }, null, 2),
+  },
+  openrouter: {
+    name: 'OpenRouter',
+    url: 'https://openrouter.ai/api/v1/chat/completions',
+    method: 'POST',
+    headers: [
+      { key: 'Authorization', value: 'Bearer ' },
+      { key: 'content-type',  value: 'application/json' },
+    ],
+    body: JSON.stringify({ model: 'openai/gpt-4o', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }, null, 2),
+  },
+};
+
+// ── Built-in providers ────────────────────────────────────────────────────────
 const PROVIDERS = [
   {
-    id: 'claude',
-    name: 'Claude',
-    sub: 'Anthropic · Haiku',
-    icon: '✦',
-    iconClass: 'icon-claude',
+    id: 'claude', name: 'Claude', sub: 'Anthropic · Haiku', icon: '✦', iconClass: 'icon-claude',
     fields: [{ id: 'apiKey', label: 'API Key', placeholder: 'sk-ant-…', type: 'password' }],
   },
   {
-    id: 'openai',
-    name: 'OpenAI',
-    sub: 'GPT-4o mini',
-    icon: '◎',
-    iconClass: 'icon-openai',
+    id: 'openai', name: 'OpenAI', sub: 'GPT-4o mini', icon: '◎', iconClass: 'icon-openai',
     fields: [{ id: 'apiKey', label: 'API Key', placeholder: 'sk-…', type: 'password' }],
   },
   {
-    id: 'gemini',
-    name: 'Gemini',
-    sub: 'Google · 2.0 Flash',
-    icon: '✦',
-    iconClass: 'icon-gemini',
+    id: 'gemini', name: 'Gemini', sub: 'Google · 2.0 Flash', icon: '✦', iconClass: 'icon-gemini',
     fields: [{ id: 'apiKey', label: 'API Key', placeholder: 'AIza…', type: 'password' }],
   },
   {
-    id: 'ollama',
-    name: 'Ollama',
-    sub: 'Local',
-    icon: '◈',
-    iconClass: 'icon-ollama',
+    id: 'ollama', name: 'Ollama', sub: 'Local', icon: '◈', iconClass: 'icon-ollama',
     fields: [
       { id: 'host', label: 'Host', placeholder: 'localhost', type: 'text', default: 'localhost' },
       { id: 'port', label: 'Port', placeholder: '11434', type: 'text', default: '11434', row: true },
@@ -243,20 +409,28 @@ const PROVIDERS = [
   },
 ];
 
-// ── API helpers ──────────────────────────────────────────────────────────────
+// ── Storage helpers ───────────────────────────────────────────────────────────
+function loadKeys()   { try { return JSON.parse(localStorage.getItem(KEYS_STORAGE) || '{}'); } catch { return {}; } }
+function saveKey(pid, fid, val) { const k = loadKeys(); if (!k[pid]) k[pid] = {}; k[pid][fid] = val; localStorage.setItem(KEYS_STORAGE, JSON.stringify(k)); }
+function loadCustom() { try { return JSON.parse(localStorage.getItem(CUSTOM_STORAGE) || '[]'); } catch { return []; } }
+function persistCustom(arr) { localStorage.setItem(CUSTOM_STORAGE, JSON.stringify(arr)); }
 
+// ── API helpers ───────────────────────────────────────────────────────────────
 async function ping(url, options = {}) {
   const start = Date.now();
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(10000), ...options });
     const latency = Date.now() - start;
     let data = null;
-    try { data = await res.json(); } catch { /* non-JSON body */ }
+    try { data = await res.json(); } catch { /* non-JSON */ }
     return { ok: res.ok, status: res.status, latency, data };
   } catch (err) {
-    return { ok: false, status: 0, latency: Date.now() - start, data: null, networkError: err.message };
+    return { ok: false, status: 0, latency: Date.now() - start, data: null, err: err.name === 'TimeoutError' ? 'Timed out after 10s' : err.message };
   }
 }
+
+const ok   = (latency, detail) => ({ ok: true,  latency, detail });
+const fail = (latency, detail) => ({ ok: false, latency, detail });
 
 const TESTS = {
   claude: async ({ apiKey }) => {
@@ -266,11 +440,9 @@ const TESTS = {
       headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }),
     });
-    if (r.networkError) return fail(r.latency, 'Network error — check CORS or connectivity');
-    if (r.ok) return ok(r.latency, 'API key valid');
-    return fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
+    if (r.err) return fail(r.latency, r.err);
+    return r.ok ? ok(r.latency, 'API key valid') : fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
   },
-
   openai: async ({ apiKey }) => {
     if (!apiKey) return fail(0, 'No API key provided');
     const r = await ping('https://api.openai.com/v1/chat/completions', {
@@ -278,11 +450,9 @@ const TESTS = {
       headers: { 'Authorization': `Bearer ${apiKey}`, 'content-type': 'application/json' },
       body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }),
     });
-    if (r.networkError) return fail(r.latency, 'Network error — check CORS or connectivity');
-    if (r.ok) return ok(r.latency, 'API key valid');
-    return fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
+    if (r.err) return fail(r.latency, r.err);
+    return r.ok ? ok(r.latency, 'API key valid') : fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
   },
-
   gemini: async ({ apiKey }) => {
     if (!apiKey) return fail(0, 'No API key provided');
     const r = await ping(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
@@ -290,177 +460,308 @@ const TESTS = {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: 'hi' }] }], generationConfig: { maxOutputTokens: 1 } }),
     });
-    if (r.networkError) return fail(r.latency, 'Network error — check CORS or connectivity');
-    if (r.ok) return ok(r.latency, 'API key valid');
-    return fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
+    if (r.err) return fail(r.latency, r.err);
+    return r.ok ? ok(r.latency, 'API key valid') : fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
   },
-
   ollama: async ({ host, port }) => {
-    host = host || 'localhost';
-    port = port || '11434';
-    const r = await ping(`http://${host}:${port}/api/tags`);
-    if (r.networkError) return fail(r.latency, 'Not reachable — is Ollama running? See hint below.');
+    const r = await ping(`http://${host || 'localhost'}:${port || '11434'}/api/tags`);
+    if (r.err) return fail(r.latency, 'Not reachable — is Ollama running? See hint below.');
     if (!r.ok) return fail(r.latency, `HTTP ${r.status}`);
     const models = (r.data?.models || []).map(m => m.name);
-    const detail = models.length
-      ? `${models.length} model(s): ${models.slice(0, 3).join(', ')}${models.length > 3 ? '…' : ''}`
-      : 'Running — no models installed';
-    return ok(r.latency, detail);
+    return ok(r.latency, models.length ? `${models.length} model(s): ${models.slice(0, 3).join(', ')}${models.length > 3 ? '…' : ''}` : 'Running — no models installed');
   },
 };
 
-const ok   = (latency, detail) => ({ ok: true,  latency, detail });
-const fail = (latency, detail) => ({ ok: false, latency, detail });
-
-// ── Storage ──────────────────────────────────────────────────────────────────
-
-function loadKeys() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+async function testCustomProvider(provider) {
+  const hdrs = {};
+  (provider.headers || []).forEach(h => { if (h.key.trim()) hdrs[h.key.trim()] = h.value; });
+  const opts = { method: provider.method, headers: hdrs };
+  if (provider.method !== 'GET' && provider.body?.trim()) opts.body = provider.body;
+  const r = await ping(provider.url, opts);
+  if (r.err) return fail(r.latency, r.err.includes('fetch') ? 'Network error or CORS blocked' : r.err);
+  if (r.ok) return ok(r.latency, `HTTP ${r.status} OK`);
+  const msg = r.data?.error?.message || r.data?.message || `HTTP ${r.status}`;
+  return fail(r.latency, msg);
 }
 
-function saveKey(providerId, fieldId, value) {
-  const keys = loadKeys();
-  if (!keys[providerId]) keys[providerId] = {};
-  keys[providerId][fieldId] = value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(keys));
+// ── Card state helper ─────────────────────────────────────────────────────────
+function applyResult(cardId, dotId, detId, latId, btnId, result) {
+  const card = document.getElementById(cardId);
+  const dot  = document.getElementById(dotId);
+  const det  = document.getElementById(detId);
+  const lat  = document.getElementById(latId);
+  const btn  = document.getElementById(btnId);
+  if (!card) return;
+  dot.className = result === null ? 'dot pending' : result.ok ? 'dot ok' : 'dot fail';
+  if (result === null) { det.className = 'detail'; det.textContent = 'Testing…'; lat.textContent = ''; card.className = 'card testing'; btn.disabled = true; return; }
+  det.className  = 'detail ' + (result.ok ? 'ok' : 'fail');
+  det.textContent = result.detail;
+  lat.textContent = result.latency ? `${result.latency}ms` : '';
+  card.className  = 'card ' + (result.ok ? 'success' : 'failure');
+  btn.disabled = false;
 }
 
-function clearKeys() {
-  localStorage.removeItem(STORAGE_KEY);
-}
-
-// ── UI ───────────────────────────────────────────────────────────────────────
-
+// ── Built-in card rendering ───────────────────────────────────────────────────
 const savedKeys = loadKeys();
 
-PROVIDERS.forEach(p => {
+function renderBuiltinCard(p) {
   const card = document.createElement('div');
   card.className = 'card';
   card.id = `card-${p.id}`;
 
   let fieldsHTML = '';
-  const fields = p.fields || [];
-
-  if (fields.some(f => f.row)) {
-    const [first, ...rest] = fields;
-    fieldsHTML += `<div class="field-group"><label>${first.label}</label><input type="${first.type}" id="${p.id}-${first.id}" placeholder="${first.placeholder}" value="${savedKeys[p.id]?.[first.id] ?? first.default ?? ''}"></div>`;
-    if (rest.length) {
-      fieldsHTML = `<div class="row">${fieldsHTML}` + rest.map(f =>
-        `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${savedKeys[p.id]?.[f.id] ?? f.default ?? ''}"></div>`
-      ).join('') + `</div>`;
-    }
+  const hasRow = p.fields.some(f => f.row);
+  if (hasRow) {
+    const [first, ...rest] = p.fields;
+    const firstHTML = `<div class="field-group"><label>${first.label}</label><input type="${first.type}" id="${p.id}-${first.id}" placeholder="${first.placeholder}" value="${savedKeys[p.id]?.[first.id] ?? first.default ?? ''}"></div>`;
+    fieldsHTML = `<div class="row">${firstHTML}${rest.map(f => `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${savedKeys[p.id]?.[f.id] ?? f.default ?? ''}"></div>`).join('')}</div>`;
   } else {
-    fieldsHTML = fields.map(f =>
-      `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${savedKeys[p.id]?.[f.id] ?? ''}"></div>`
-    ).join('');
+    fieldsHTML = p.fields.map(f => `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${savedKeys[p.id]?.[f.id] ?? ''}"></div>`).join('');
   }
 
-  const hintHTML = p.hint
-    ? `<div class="ollama-hint" id="hint-${p.id}" style="display:none">
-        If testing from a remote URL, restart Ollama with:<br>
-        <code>OLLAMA_ORIGINS=${window.location.origin} ollama serve</code>
-      </div>`
-    : '';
+  const hintHTML = p.hint ? `<div class="ollama-hint" id="hint-${p.id}" style="display:none">If testing from a remote URL, restart Ollama with:<br><code>OLLAMA_ORIGINS=${window.location.origin} ollama serve</code></div>` : '';
 
   card.innerHTML = `
     <div class="card-header">
       <div class="provider-info">
         <div class="icon ${p.iconClass}">${p.icon}</div>
-        <div>
-          <div class="provider-name">${p.name}</div>
-          <div class="provider-sub">${p.sub}</div>
-        </div>
+        <div><div class="provider-name">${p.name}</div><div class="provider-sub">${p.sub}</div></div>
       </div>
-      <div class="status-wrap">
-        <span class="dot" id="dot-${p.id}"></span>
-        <span class="latency" id="lat-${p.id}"></span>
+      <div class="card-right">
+        <div class="status-wrap"><span class="dot" id="dot-${p.id}"></span><span class="latency" id="lat-${p.id}"></span></div>
       </div>
     </div>
     ${fieldsHTML}
     ${hintHTML}
     <div class="footer-row">
       <span class="detail" id="det-${p.id}">—</span>
-      <button class="btn-test" id="btn-${p.id}" onclick="runTest('${p.id}')">Test</button>
-    </div>
-  `;
+      <button class="btn-test" id="btn-${p.id}" onclick="runBuiltinTest('${p.id}')">Test</button>
+    </div>`;
 
   document.getElementById('grid').appendChild(card);
 
-  // Save on input
-  (p.fields || []).forEach(f => {
+  p.fields.forEach(f => {
     const el = document.getElementById(`${p.id}-${f.id}`);
-    if (el) el.addEventListener('input', () => saveKey(p.id, f.id, el.value));
+    if (el) { el.addEventListener('input', () => saveKey(p.id, f.id, el.value)); el.addEventListener('keydown', e => { if (e.key === 'Enter') runBuiltinTest(p.id); }); }
   });
-
-  // Enter to test
-  const first = p.fields?.[0];
-  if (first) {
-    const el = document.getElementById(`${p.id}-${first.id}`);
-    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') runTest(p.id); });
-  }
-});
-
-async function runTest(id) {
-  const card = document.getElementById(`card-${id}`);
-  const dot  = document.getElementById(`dot-${id}`);
-  const det  = document.getElementById(`det-${id}`);
-  const lat  = document.getElementById(`lat-${id}`);
-  const btn  = document.getElementById(`btn-${id}`);
-  const hint = document.getElementById(`hint-${id}`);
-
-  dot.className = 'dot pending';
-  det.className = 'detail';
-  det.textContent = 'Testing…';
-  lat.textContent = '';
-  btn.disabled = true;
-  card.className = 'card testing';
-  if (hint) hint.style.display = 'none';
-
-  const p = PROVIDERS.find(x => x.id === id);
-  const params = {};
-  (p.fields || []).forEach(f => {
-    const el = document.getElementById(`${p.id}-${f.id}`);
-    if (el) params[f.id] = el.value.trim();
-  });
-
-  const result = await TESTS[id](params);
-
-  if (result.ok) {
-    dot.className = 'dot ok';
-    det.className = 'detail ok';
-    card.className = 'card success';
-  } else {
-    dot.className = 'dot fail';
-    det.className = 'detail fail';
-    card.className = 'card failure';
-    if (hint && result.detail.includes('hint')) hint.style.display = 'block';
-  }
-
-  det.textContent = result.detail;
-  lat.textContent = result.latency ? `${result.latency}ms` : '';
-  btn.disabled = false;
 }
 
-document.getElementById('testAll').addEventListener('click', () => {
-  PROVIDERS.forEach(p => runTest(p.id));
-});
+async function runBuiltinTest(id) {
+  const p = PROVIDERS.find(x => x.id === id);
+  applyResult(`card-${id}`, `dot-${id}`, `det-${id}`, `lat-${id}`, `btn-${id}`, null);
+  const hint = document.getElementById(`hint-${id}`);
+  if (hint) hint.style.display = 'none';
+  const params = {};
+  p.fields.forEach(f => { const el = document.getElementById(`${id}-${f.id}`); if (el) params[f.id] = el.value.trim(); });
+  const result = await TESTS[id](params);
+  applyResult(`card-${id}`, `dot-${id}`, `det-${id}`, `lat-${id}`, `btn-${id}`, result);
+  if (hint && !result.ok && result.detail.includes('hint')) hint.style.display = 'block';
+}
 
-document.getElementById('clearAll').addEventListener('click', () => {
-  clearKeys();
+// ── Custom card rendering ─────────────────────────────────────────────────────
+function renderCustomCard(provider) {
+  const cid  = provider.id;
+  const color = provider.color || ACCENT_COLORS[0];
+  const label = provider.name.charAt(0).toUpperCase();
+  const sub   = provider.url.replace(/^https?:\/\//, '').substring(0, 40);
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = `card-${cid}`;
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="provider-info">
+        <div class="icon" style="background:${color}20;color:${color}">${label}</div>
+        <div><div class="provider-name">${escHtml(provider.name)}</div><div class="provider-sub" title="${escHtml(provider.url)}">${escHtml(sub)}…</div></div>
+      </div>
+      <div class="card-right">
+        <div class="status-wrap"><span class="dot" id="dot-${cid}"></span><span class="latency" id="lat-${cid}"></span></div>
+        <button class="delete-btn" title="Remove" onclick="deleteCustom('${cid}')">×</button>
+      </div>
+    </div>
+    <div class="footer-row">
+      <span class="detail" id="det-${cid}">—</span>
+      <button class="btn-test" id="btn-${cid}" onclick="runCustomTest('${cid}')">Test</button>
+    </div>`;
+
+  const grid = document.getElementById('grid');
+  const form = document.getElementById('add-form');
+  grid.insertBefore(card, form || null);
+}
+
+async function runCustomTest(cid) {
+  const customs = loadCustom();
+  const provider = customs.find(p => p.id === cid);
+  if (!provider) return;
+  applyResult(`card-${cid}`, `dot-${cid}`, `det-${cid}`, `lat-${cid}`, `btn-${cid}`, null);
+  const result = await testCustomProvider(provider);
+  applyResult(`card-${cid}`, `dot-${cid}`, `det-${cid}`, `lat-${cid}`, `btn-${cid}`, result);
+}
+
+function deleteCustom(cid) {
+  const card = document.getElementById(`card-${cid}`);
+  if (card) card.remove();
+  persistCustom(loadCustom().filter(p => p.id !== cid));
+}
+
+// ── Add API form ──────────────────────────────────────────────────────────────
+function showAddForm() {
+  if (document.getElementById('add-form')) { document.getElementById('af-name')?.focus(); return; }
+
+  const form = document.createElement('div');
+  form.className = 'add-form-card';
+  form.id = 'add-form';
+  form.innerHTML = `
+    <div class="form-title-row">
+      <span class="form-title">New API</span>
+      <button class="close-btn" onclick="cancelAddForm()">×</button>
+    </div>
+    <div class="field-group">
+      <label>Template</label>
+      <select id="af-template" onchange="applyTemplate(this.value)">
+        <option value="">— Blank —</option>
+        <option value="anthropic">Claude (Anthropic)</option>
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Gemini (Google)</option>
+        <option value="groq">Groq</option>
+        <option value="mistral">Mistral</option>
+        <option value="xai">xAI (Grok)</option>
+        <option value="cohere">Cohere</option>
+        <option value="openrouter">OpenRouter</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Name</label>
+      <input type="text" id="af-name" placeholder="My API">
+    </div>
+    <div class="row">
+      <div class="field-group">
+        <label>URL</label>
+        <input type="text" id="af-url" placeholder="https://api.example.com/v1/endpoint">
+      </div>
+      <div class="field-group" style="flex:0 0 90px">
+        <label>Method</label>
+        <select id="af-method" onchange="toggleBodyField()">
+          <option value="POST" selected>POST</option>
+          <option value="GET">GET</option>
+          <option value="PUT">PUT</option>
+          <option value="PATCH">PATCH</option>
+          <option value="DELETE">DELETE</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-group">
+      <label>
+        Headers
+        <button class="add-hdr-btn" style="padding:0.1rem 0.5rem;width:auto;margin:0" onclick="addHdrRow()">+ Add</button>
+      </label>
+      <div class="hdr-rows" id="af-headers"></div>
+    </div>
+    <div class="field-group" id="af-body-group">
+      <label>Body (JSON)</label>
+      <textarea id="af-body" placeholder='{"key": "value"}'></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="cancelAddForm()">Cancel</button>
+      <button class="btn btn-primary"   onclick="submitAddForm()">Save</button>
+    </div>`;
+
+  document.getElementById('grid').appendChild(form);
+  document.getElementById('af-name').focus();
+}
+
+function cancelAddForm() {
+  document.getElementById('add-form')?.remove();
+}
+
+function applyTemplate(name) {
+  if (!name) return;
+  const t = TEMPLATES[name];
+  if (!t) return;
+  document.getElementById('af-name').value   = t.name;
+  document.getElementById('af-url').value    = t.url;
+  document.getElementById('af-method').value = t.method;
+  document.getElementById('af-body').value   = t.body || '';
+  const hdrsEl = document.getElementById('af-headers');
+  hdrsEl.innerHTML = '';
+  t.headers.forEach(h => addHdrRow(h.key, h.value));
+  toggleBodyField();
+}
+
+function addHdrRow(key = '', value = '') {
+  const row = document.createElement('div');
+  row.className = 'hdr-row';
+  row.innerHTML = `
+    <input type="text"     placeholder="Header name"  value="${escHtml(key)}"   style="flex:1;font-family:monospace;font-size:0.8rem">
+    <input type="text"     placeholder="Value"         value="${escHtml(value)}" style="flex:1.4;font-family:monospace;font-size:0.8rem">
+    <button class="rm-btn" onclick="this.closest('.hdr-row').remove()">×</button>`;
+  document.getElementById('af-headers').appendChild(row);
+}
+
+function toggleBodyField() {
+  const method = document.getElementById('af-method')?.value || 'POST';
+  const bg = document.getElementById('af-body-group');
+  if (bg) bg.style.display = ['GET','DELETE'].includes(method) ? 'none' : '';
+}
+
+function submitAddForm() {
+  const name   = document.getElementById('af-name').value.trim();
+  const url    = document.getElementById('af-url').value.trim();
+  const method = document.getElementById('af-method').value;
+  const body   = document.getElementById('af-body').value.trim();
+
+  if (!name) { alert('Please enter a name.'); document.getElementById('af-name').focus(); return; }
+  if (!url)  { alert('Please enter a URL.');  document.getElementById('af-url').focus();  return; }
+  try { new URL(url); } catch { alert('Please enter a valid URL.'); document.getElementById('af-url').focus(); return; }
+
+  if (body) {
+    try { JSON.parse(body); } catch { if (!confirm('The body does not appear to be valid JSON. Save anyway?')) return; }
+  }
+
+  const headers = [...document.querySelectorAll('#af-headers .hdr-row')].map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { key: inputs[0].value.trim(), value: inputs[1].value };
+  }).filter(h => h.key);
+
+  const customs = loadCustom();
+  const color   = ACCENT_COLORS[customs.length % ACCENT_COLORS.length];
+  const provider = { id: `c${Date.now()}`, name, url, method, headers, body, color };
+
+  customs.push(provider);
+  persistCustom(customs);
+  cancelAddForm();
+  renderCustomCard(provider);
+}
+
+// ── "Clear" resets built-in cards only (preserves custom) ────────────────────
+function clearBuiltins() {
+  localStorage.removeItem(KEYS_STORAGE);
   PROVIDERS.forEach(p => {
-    (p.fields || []).forEach(f => {
-      const el = document.getElementById(`${p.id}-${f.id}`);
-      if (el && f.type === 'password') el.value = '';
-    });
-    document.getElementById(`dot-${p.id}`).className = 'dot';
-    document.getElementById(`det-${p.id}`).className = 'detail';
-    document.getElementById(`det-${p.id}`).textContent = '—';
-    document.getElementById(`lat-${p.id}`).textContent = '';
-    document.getElementById(`card-${p.id}`).className = 'card';
+    p.fields.forEach(f => { const el = document.getElementById(`${p.id}-${f.id}`); if (el && f.type === 'password') el.value = ''; });
+    ['dot','det','lat'].forEach(x => { const el = document.getElementById(`${x}-${p.id}`); if (el) { el.className = x === 'dot' ? 'dot' : (x === 'det' ? 'detail' : 'latency'); if (x !== 'dot') el.textContent = x === 'det' ? '—' : ''; } });
+    const card = document.getElementById(`card-${p.id}`);
+    if (card) card.className = 'card';
     const hint = document.getElementById(`hint-${p.id}`);
     if (hint) hint.style.display = 'none';
   });
+}
+
+// ── Utility ───────────────────────────────────────────────────────────────────
+function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+PROVIDERS.forEach(renderBuiltinCard);
+loadCustom().forEach(renderCustomCard);
+
+// ── Global event listeners ────────────────────────────────────────────────────
+document.getElementById('btnAdd').addEventListener('click', showAddForm);
+
+document.getElementById('testAll').addEventListener('click', () => {
+  PROVIDERS.forEach(p => runBuiltinTest(p.id));
+  loadCustom().forEach(p => runCustomTest(p.id));
 });
+
+document.getElementById('clearAll').addEventListener('click', clearBuiltins);
 </script>
 </body>
 </html>
