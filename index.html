@@ -389,15 +389,15 @@ const TEMPLATES = {
 // ── Built-in providers ────────────────────────────────────────────────────────
 const PROVIDERS = [
   {
-    id: 'claude', name: 'Claude', sub: 'Anthropic · Haiku', icon: '✦', iconClass: 'icon-claude',
+    id: 'claude', name: 'Claude', sub: 'Anthropic', icon: '✦', iconClass: 'icon-claude',
     fields: [{ id: 'apiKey', label: 'API Key', placeholder: 'sk-ant-…', type: 'password' }],
   },
   {
-    id: 'openai', name: 'OpenAI', sub: 'GPT-4o mini', icon: '◎', iconClass: 'icon-openai',
+    id: 'openai', name: 'OpenAI', sub: 'OpenAI', icon: '◎', iconClass: 'icon-openai',
     fields: [{ id: 'apiKey', label: 'API Key', placeholder: 'sk-…', type: 'password' }],
   },
   {
-    id: 'gemini', name: 'Gemini', sub: 'Google · 2.0 Flash', icon: '✦', iconClass: 'icon-gemini',
+    id: 'gemini', name: 'Gemini', sub: 'Google', icon: '✦', iconClass: 'icon-gemini',
     fields: [{ id: 'apiKey', label: 'API Key', placeholder: 'AIza…', type: 'password' }],
   },
   {
@@ -436,33 +436,41 @@ const fail = (latency, detail) => ({ ok: false, latency, detail });
 const TESTS = {
   claude: async ({ apiKey }) => {
     if (!apiKey) return fail(0, 'No API key provided');
-    const r = await ping('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }),
+    const r = await ping('https://api.anthropic.com/v1/models', {
+      method: 'GET',
+      headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
     });
     if (r.err) return fail(r.latency, r.err);
-    return r.ok ? ok(r.latency, 'API key valid') : fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
+    if (r.ok) {
+      const models = (r.data?.data || []).map(m => m.id);
+      return ok(r.latency, models.length ? `${models.length} models available` : 'API key valid');
+    }
+    return fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
   },
   openai: async ({ apiKey }) => {
     if (!apiKey) return fail(0, 'No API key provided');
-    const r = await ping('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }),
+    const r = await ping('https://api.openai.com/v1/models', {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${apiKey}` },
     });
     if (r.err) return fail(r.latency, r.err);
-    return r.ok ? ok(r.latency, 'API key valid') : fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
+    if (r.ok) {
+      const count = (r.data?.data || []).length;
+      return ok(r.latency, count ? `${count} models available` : 'API key valid');
+    }
+    return fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
   },
   gemini: async ({ apiKey }) => {
     if (!apiKey) return fail(0, 'No API key provided');
-    const r = await ping(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: 'hi' }] }], generationConfig: { maxOutputTokens: 1 } }),
+    const r = await ping(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`, {
+      method: 'GET',
     });
     if (r.err) return fail(r.latency, r.err);
-    return r.ok ? ok(r.latency, 'API key valid') : fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
+    if (r.ok) {
+      const models = (r.data?.models || []).map(m => m.name.replace('models/', ''));
+      return ok(r.latency, models.length ? `${models.length} models available` : 'API key valid');
+    }
+    return fail(r.latency, r.data?.error?.message || `HTTP ${r.status}`);
   },
   ollama: async ({ host, port }) => {
     const r = await ping(`http://${host || 'localhost'}:${port || '11434'}/api/tags`);
