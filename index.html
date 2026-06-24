@@ -525,10 +525,10 @@ function renderBuiltinCard(p) {
   const hasRow = p.fields.some(f => f.row);
   if (hasRow) {
     const [first, ...rest] = p.fields;
-    const firstHTML = `<div class="field-group"><label>${first.label}</label><input type="${first.type}" id="${p.id}-${first.id}" placeholder="${first.placeholder}" value="${savedKeys[p.id]?.[first.id] ?? first.default ?? ''}"></div>`;
-    fieldsHTML = `<div class="row">${firstHTML}${rest.map(f => `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${savedKeys[p.id]?.[f.id] ?? f.default ?? ''}"></div>`).join('')}</div>`;
+    const firstHTML = `<div class="field-group"><label>${first.label}</label><input type="${first.type}" id="${p.id}-${first.id}" placeholder="${first.placeholder}" value="${escHtml(savedKeys[p.id]?.[first.id] ?? first.default ?? '')}"></div>`;
+    fieldsHTML = `<div class="row">${firstHTML}${rest.map(f => `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${escHtml(savedKeys[p.id]?.[f.id] ?? f.default ?? '')}"></div>`).join('')}</div>`;
   } else {
-    fieldsHTML = p.fields.map(f => `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${savedKeys[p.id]?.[f.id] ?? ''}"></div>`).join('');
+    fieldsHTML = p.fields.map(f => `<div class="field-group"><label>${f.label}</label><input type="${f.type}" id="${p.id}-${f.id}" placeholder="${f.placeholder}" value="${escHtml(savedKeys[p.id]?.[f.id] ?? '')}"></div>`).join('');
   }
 
   const hintHTML = p.hint ? `<div class="ollama-hint" id="hint-${p.id}" style="display:none">If testing from a remote URL, restart Ollama with:<br><code>OLLAMA_ORIGINS=${window.location.origin} ollama serve</code></div>` : '';
@@ -573,7 +573,7 @@ async function runBuiltinTest(id) {
 // ── Custom card rendering ─────────────────────────────────────────────────────
 function renderCustomCard(provider) {
   const cid  = provider.id;
-  const color = provider.color || ACCENT_COLORS[0];
+  const color = ACCENT_COLORS.includes(provider.color) ? provider.color : ACCENT_COLORS[0];
   const label = provider.name.charAt(0).toUpperCase();
   const sub   = provider.url.replace(/^https?:\/\//, '').substring(0, 40);
 
