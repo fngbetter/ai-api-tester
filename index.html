@@ -184,6 +184,7 @@
     .detail { font-size: 0.78rem; color: var(--muted); min-height: 1rem; word-break: break-word; flex: 1; }
     .detail.ok   { color: #10b981; }
     .detail.fail { color: #ef4444; }
+    .detail[title]:not([title=""]) { cursor: help; text-decoration: underline dotted #555; }
 
     .btn-test {
       padding: 0.45rem 0.9rem;
@@ -495,7 +496,10 @@ function applyResult(cardId, dotId, detId, latId, btnId, result) {
   dot.className = result === null ? 'dot pending' : result.ok ? 'dot ok' : 'dot fail';
   if (result === null) { det.className = 'detail'; det.textContent = 'Testing…'; lat.textContent = ''; card.className = 'card testing'; btn.disabled = true; return; }
   det.className  = 'detail ' + (result.ok ? 'ok' : 'fail');
-  det.textContent = result.detail;
+  const full = result.detail || '';
+  const short = full.length > 120 ? full.slice(0, 120).trimEnd() + '…' : full;
+  det.textContent = short;
+  det.title = full.length > 120 ? full : '';
   lat.textContent = result.latency ? `${result.latency}ms` : '';
   card.className  = 'card ' + (result.ok ? 'success' : 'failure');
   btn.disabled = false;
